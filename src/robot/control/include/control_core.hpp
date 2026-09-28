@@ -35,10 +35,10 @@ class ControlCore {
 
     rclcpp::Logger logger_;
 
-    const double lookahead_distance_ = 1.0;
-    const double goal_tolerance_ = 0.3;
-    const double linear_speed_ = 0.5;
-    const double max_angular_speed_ = 1.0;
+    const double lookahead_distance_ = 1.5;
+    const double goal_tolerance_ = 0.5;
+    const double linear_speed_ = 1.0;
+    const double max_angular_speed_ = 2.0;
     const double turn_in_place_angle_ = M_PI / 3.0;
 };
 

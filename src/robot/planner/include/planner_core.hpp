@@ -67,7 +67,7 @@ class PlannerCore {
 
     // Cell values at or above this count as an obstacle and can't be entered.
     // Unknown cells (-1) are also treated as blocked.
-    static constexpr int8_t OBSTACLE_THRESHOLD = 10;
+    static constexpr int8_t OBSTACLE_THRESHOLD = 30;
 
     // Converts a world position (metres) to a grid cell using map.info.origin
     // and map.info.resolution. Writes the result into `cell` and returns false

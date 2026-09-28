@@ -38,10 +38,10 @@ class CostmapCore {
     int height_;
 
     std::vector<std::pair<int, int>> obstacle_cells_;
-    double inflation_radius_ = 1.0;   // meters
+    double inflation_radius_ = 3;// meters
     int max_cost_ = 100;
 };
 
-}  
+}
 
 #endif

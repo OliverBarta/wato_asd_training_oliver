@@ -45,9 +45,6 @@ nav_msgs::msg::Path PlannerCore::planPath(const nav_msgs::msg::OccupancyGrid& ma
   g_score[start] = 0.0;
 
   while(!open_list.empty()) {
-    
-
-    
     AStarNode node = open_list.top();
     open_list.pop();
     current = node.index;
