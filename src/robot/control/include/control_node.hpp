@@ -2,14 +2,6 @@
 #define CONTROL_NODE_HPP_
 
 // ControlNode: the ROS wrapper around ControlCore.
-//
-// Subscribes:
-//   /path           nav_msgs::msg::Path        planned path from the planner
-//   /odom/filtered  nav_msgs::msg::Odometry    robot's current pose
-// Publishes:
-//   /cmd_vel        geometry_msgs::msg::Twist  velocity command for the robot
-// Timer:
-//   Every 100 ms (10 Hz), computes and publishes a new command.
 
 #include "rclcpp/rclcpp.hpp"
 #include "nav_msgs/msg/path.hpp"

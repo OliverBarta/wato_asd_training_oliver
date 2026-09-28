@@ -12,9 +12,9 @@ ControlCore::ControlCore(const rclcpp::Logger& logger)
 
 geometry_msgs::msg::Twist ControlCore::computeCommand(const nav_msgs::msg::Path& path,
                                                       const nav_msgs::msg::Odometry& odom) const {
-  geometry_msgs::msg::Twist stop;  // all zeros
+  geometry_msgs::msg::Twist stop;// all zeros
 
-  // Empty path: no goal, or the planner gave up
+  // Empty path
   if (path.poses.empty()) {
     return stop;
   }
@@ -42,7 +42,7 @@ std::optional<geometry_msgs::msg::PoseStamped> ControlCore::findLookaheadPoint(
     return std::nullopt;
   }
 
-  // Start from the pose closest to the robot so we never pick a point behind it
+  // start from the pose closest to the robot so we never pick a point behind it
   std::size_t closest = 0;
   double closest_dist = std::numeric_limits<double>::max();
   for (std::size_t i = 0; i < path.poses.size(); ++i) {

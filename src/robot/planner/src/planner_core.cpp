@@ -7,9 +7,6 @@
 #include <unordered_set>
 #include <vector>
 
-// Grid cell (x, y) lives at map.data[y * map.info.width + x].
-// Values: -1 unknown, 0 free, 1..100 increasing cost / occupied.
-
 namespace robot
 {
 
@@ -69,8 +66,7 @@ nav_msgs::msg::Path PlannerCore::planPath(const nav_msgs::msg::OccupancyGrid& ma
       // If the robot has ended up inside an obstacle's inflation zone, let it
       // step "downhill" to lower-cost cells so it can plan its way back out
       // instead of being stuck with no free neighbours
-      bool escaping = !isFree(map, current) && inBounds(map, neighbour) &&
-                      getCost(map, neighbour) >= 0 && getCost(map, neighbour) < getCost(map, current);
+      bool escaping = !isFree(map, current) && inBounds(map, neighbour) && getCost(map, neighbour) >= 0 && getCost(map, neighbour) < getCost(map, current);
       if (!isFree(map, neighbour) && !escaping) {
         continue;
       }

@@ -34,10 +34,6 @@ void MapMemoryCore::integrateCostmap(const nav_msgs::msg::OccupancyGrid& costmap
   // half-width), not the square's corners
   double view_radius = std::min(local_width, local_height) * local_res / 2.0;
 
-  // Loop over the global cells around the robot and look each one up in the
-  // local costmap (global -> local), rather than pushing local cells out to the
-  // global grid. Pushing a rotated grid out leaves some global cells never
-  // written, which showed up as zero-cost "holes" inside obstacles.
   int gx_min = std::max(0, static_cast<int>(std::floor((robot_x - view_radius - origin_x_) / resolution_)));
   int gx_max = std::min(width_ - 1, static_cast<int>(std::floor((robot_x + view_radius - origin_x_) / resolution_)));
   int gy_min = std::max(0, static_cast<int>(std::floor((robot_y - view_radius - origin_y_) / resolution_)));

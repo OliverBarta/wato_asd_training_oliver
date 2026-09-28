@@ -20,9 +20,6 @@ OdometrySpoofNode::OdometrySpoofNode() : Node("odometry_spoof") {
 }
 
 void OdometrySpoofNode::timerCallback() {
-  // We'll look up the transform from sim_world -> robot/chassis/lidar, 
-  // note robot frame is usually not the lidar sensor, but we do so to make this
-  // assignment easier
   const std::string target_frame = "robot/chassis/lidar";
   const std::string source_frame = "sim_world";
 
@@ -72,15 +69,9 @@ void OdometrySpoofNode::timerCallback() {
       odom_msg.twist.twist.linear.z = dz / dt;
 
       // Angular velocity
-      tf2::Quaternion q_last(last_orientation_.x(),
-                             last_orientation_.y(),
-                             last_orientation_.z(),
-                             last_orientation_.w());
+      tf2::Quaternion q_last(last_orientation_.x(), last_orientation_.y(), last_orientation_.z(), last_orientation_.w());
 
-      tf2::Quaternion q_current(transform_stamped.transform.rotation.x,
-                                transform_stamped.transform.rotation.y,
-                                transform_stamped.transform.rotation.z,
-                                transform_stamped.transform.rotation.w);
+      tf2::Quaternion q_current(transform_stamped.transform.rotation.x, transform_stamped.transform.rotation.y, transform_stamped.transform.rotation.z, transform_stamped.transform.rotation.w);
 
       // Orientation difference: q_diff = q_last.inverse() * q_current
       tf2::Quaternion q_diff = q_last.inverse() * q_current;

@@ -1,15 +1,6 @@
 #ifndef PLANNER_CORE_HPP_
 #define PLANNER_CORE_HPP_
 
-// PlannerCore: the A* pathfinding logic, with no ROS pub/sub in here.
-//
-// Given an occupancy grid (/map), a start position (the robot) and a goal
-// position (both in world metres), it searches the grid with A* and returns
-// a nav_msgs::msg::Path from start to goal, or an empty path if none exists.
-//
-// Keeping this separate from the node means it can be unit tested without
-// spinning up ROS, same as costmap_core / map_memory_core.
-
 #include "rclcpp/rclcpp.hpp"
 #include "nav_msgs/msg/occupancy_grid.hpp"
 #include "nav_msgs/msg/path.hpp"

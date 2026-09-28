@@ -1,24 +1,6 @@
 #ifndef PLANNER_NODE_HPP_
 #define PLANNER_NODE_HPP_
 
-// PlannerNode: the ROS wrapper around PlannerCore plus the state machine.
-//
-// Subscribes:
-//   /map            nav_msgs::msg::OccupancyGrid     global map from map_memory (the A* grid)
-//   /goal_point     geometry_msgs::msg::PointStamped where the robot should go
-//   /odom/filtered  nav_msgs::msg::Odometry          robot's current position
-// Publishes:
-//   /path           nav_msgs::msg::Path              planned path, robot -> goal
-// Timer:
-//   Periodically checks whether the goal was reached or a timeout hit.
-//
-// State machine:
-//   WAITING_FOR_GOAL
-//     -> (valid goal received) -> WAITING_FOR_ROBOT_TO_REACH_GOAL
-//   WAITING_FOR_ROBOT_TO_REACH_GOAL
-//     -> (goal reached or timeout) -> WAITING_FOR_GOAL
-//     -> (new map arrives)         -> replan, stay in this state
-
 #include "rclcpp/rclcpp.hpp"
 #include "nav_msgs/msg/occupancy_grid.hpp"
 #include "nav_msgs/msg/odometry.hpp"

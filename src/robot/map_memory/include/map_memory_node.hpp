@@ -43,8 +43,8 @@ class MapMemoryNode : public rclcpp::Node {
     bool first_odom_ = true;
     bool initial_map_integrated_ = false;
 
-    const double update_distance_threshold_ = 1.5;  // meters
-    const double max_integration_yaw_rate_ = 0.3;   // rad/s, skip merging while turning faster than this
+    const double update_distance_threshold_ = 1.5; // meters
+    const double max_integration_yaw_rate_ = 0.3; // rad/s, skip merging while turning faster than this
 };
 
 #endif
