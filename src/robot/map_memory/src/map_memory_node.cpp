@@ -20,9 +20,6 @@ void MapMemoryNode::costmapCallback(const nav_msgs::msg::OccupancyGrid::SharedPt
   latest_costmap_ = *msg;
   costmap_received_ = true;
 
-  // Snapshot the pose now, while it still matches the scan this costmap came
-  // from. Reading it later in the timer lets the robot move/turn in between,
-  // which smears rotated "ghost" copies of obstacles into the global map.
   costmap_x_ = robot_x_;
   costmap_y_ = robot_y_;
   costmap_theta_ = robot_theta_;
@@ -40,7 +37,6 @@ void MapMemoryNode::odomCallback(const nav_msgs::msg::Odometry::SharedPtr msg) {
   double qw = msg->pose.pose.orientation.w;
   double theta = std::atan2(2.0 * (qw * qz + qx * qy), 1.0 - 2.0 * (qy * qy + qz * qz));
 
-  // Turn rate from consecutive odometry messages (angle difference wrapped to [-pi, pi])
   rclcpp::Time stamp(msg->header.stamp);
   if (!first_odom_) {
     double dt = (stamp - last_odom_stamp_).seconds();
@@ -61,19 +57,15 @@ void MapMemoryNode::odomCallback(const nav_msgs::msg::Odometry::SharedPtr msg) {
 
 void MapMemoryNode::updateMap() {
   if (!costmap_received_ || first_odom_) {
-    return;  // need both a costmap and a pose before we can place anything
+    return; // need both a costmap and a pose before we can place anything
   }
 
   double dx = costmap_x_ - last_update_x_;
   double dy = costmap_y_ - last_update_y_;
   double distance = std::sqrt(dx * dx + dy * dy);
 
-  // While turning quickly, even a small timing error puts obstacles in the
-  // wrong place, so wait until the turn is over (retried on the next tick)
   bool turning = std::abs(costmap_yaw_rate_) > max_integration_yaw_rate_;
 
-  // Keep merging until the first costmap with obstacles in it arrives, so the
-  // starting surroundings are captured even if the lidar starts up late
   if (!turning && (!initial_map_integrated_ || distance >= update_distance_threshold_)) {
     map_memory_.integrateCostmap(latest_costmap_, costmap_x_, costmap_y_, costmap_theta_);
     last_update_x_ = costmap_x_;

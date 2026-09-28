@@ -29,10 +29,9 @@ class MapMemoryNode : public rclcpp::Node {
     double robot_x_ = 0.0;
     double robot_y_ = 0.0;
     double robot_theta_ = 0.0;
-    double yaw_rate_ = 0.0;  // rad/s
+    double yaw_rate_ = 0.0;
     rclcpp::Time last_odom_stamp_;
 
-    // Robot pose (and turn rate) at the moment the latest costmap arrived
     double costmap_x_ = 0.0;
     double costmap_y_ = 0.0;
     double costmap_theta_ = 0.0;
@@ -43,8 +42,8 @@ class MapMemoryNode : public rclcpp::Node {
     bool first_odom_ = true;
     bool initial_map_integrated_ = false;
 
-    const double update_distance_threshold_ = 1.5; // meters
-    const double max_integration_yaw_rate_ = 0.3; // rad/s, skip merging while turning faster than this
+    const double update_distance_threshold_ = 1.5;
+    const double max_integration_yaw_rate_ = 0.3;
 };
 
 #endif

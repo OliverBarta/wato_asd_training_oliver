@@ -14,11 +14,7 @@ PlannerCore::PlannerCore(const rclcpp::Logger& logger)
 : logger_(logger) {}
 
 // finds the most optimal path using A* pathfinding algorithm, returns a nav_msgs::msg::Path with the path from start to goal
-nav_msgs::msg::Path PlannerCore::planPath(const nav_msgs::msg::OccupancyGrid& map,
-                                          double start_x, double start_y,
-                                          double goal_x, double goal_y,
-                                          const std::string& frame_id) {
-                                        // TODO. done
+nav_msgs::msg::Path PlannerCore::planPath(const nav_msgs::msg::OccupancyGrid& map, double start_x, double start_y, double goal_x, double goal_y, const std::string& frame_id) {
   CellIndex start, goal;
 
   if (!worldToGrid(map, start_x, start_y, start) || !worldToGrid(map, goal_x, goal_y, goal)) {
@@ -60,9 +56,6 @@ nav_msgs::msg::Path PlannerCore::planPath(const nav_msgs::msg::OccupancyGrid& ma
     std::vector<CellIndex> neightbours = getNeighbours(current);
 
     for (const CellIndex& neighbour : neightbours) {
-      // If the robot has ended up inside an obstacle's inflation zone, let it
-      // step "downhill" to lower-cost cells so it can plan its way back out
-      // instead of being stuck with no free neighbours
       bool escaping = !isFree(map, current) && inBounds(map, neighbour) && getCost(map, neighbour) >= 0 && getCost(map, neighbour) < getCost(map, current);
       if (!isFree(map, neighbour) && !escaping) {
         continue;
@@ -85,9 +78,7 @@ nav_msgs::msg::Path PlannerCore::planPath(const nav_msgs::msg::OccupancyGrid& ma
   return nav_msgs::msg::Path();
 }
 
-bool PlannerCore::worldToGrid(const nav_msgs::msg::OccupancyGrid& map,
-                              double wx, double wy, CellIndex& cell) const {
-  // TODO. done
+bool PlannerCore::worldToGrid(const nav_msgs::msg::OccupancyGrid& map, double wx, double wy, CellIndex& cell) const {
   int grid_x = floor((wx - map.info.origin.position.x)/map.info.resolution);
   int grid_y = floor((wy - map.info.origin.position.y)/map.info.resolution);
 
@@ -101,9 +92,7 @@ bool PlannerCore::worldToGrid(const nav_msgs::msg::OccupancyGrid& map,
   return true;
 }
 
-void PlannerCore::gridToWorld(const nav_msgs::msg::OccupancyGrid& map,
-                              const CellIndex& cell, double& wx, double& wy) const {
-  // TODO. done
+void PlannerCore::gridToWorld(const nav_msgs::msg::OccupancyGrid& map, const CellIndex& cell, double& wx, double& wy) const {
   wx = map.info.origin.position.x + (cell.x + 0.5) * map.info.resolution;
   wy = map.info.origin.position.y + (cell.y + 0.5) * map.info.resolution;
   
@@ -115,7 +104,6 @@ bool PlannerCore::inBounds(const nav_msgs::msg::OccupancyGrid& map, const CellIn
 }
 
 bool PlannerCore::isFree(const nav_msgs::msg::OccupancyGrid& map, const CellIndex& cell) const {
-  // TODO. done
   if (!inBounds(map, cell)) {
     return false;// out of bounds
   }
@@ -127,19 +115,16 @@ bool PlannerCore::isFree(const nav_msgs::msg::OccupancyGrid& map, const CellInde
 
 // cost of a cell because .data is a squished 2d array
 int8_t PlannerCore::getCost(const nav_msgs::msg::OccupancyGrid& map, const CellIndex& cell) const {
-  // TODO. done
   return map.data[cell.y * map.info.width + cell.x];
 }
 
 // distance between cells
 double PlannerCore::distance(const CellIndex& a, const CellIndex& b) const {
-  // TODO. done
   return sqrt(pow(a.x - b.x, 2) + pow(a.y - b.y, 2));
 }
 
 // the eight neighbours of a cell (straight and diagonal)
 std::vector<CellIndex> PlannerCore::getNeighbours(const CellIndex& cell) const {
-  // TODO. done
   std::vector<CellIndex> neighbours;
 
   neighbours.push_back({cell.x - 1, cell.y});// left
@@ -154,11 +139,7 @@ std::vector<CellIndex> PlannerCore::getNeighbours(const CellIndex& cell) const {
   return neighbours;
 }
 
-nav_msgs::msg::Path PlannerCore::reconstructPath(
-    const nav_msgs::msg::OccupancyGrid& map,
-    const std::unordered_map<CellIndex, CellIndex, CellIndexHash>& came_from,
-    const CellIndex& start, const CellIndex& goal,
-    const std::string& frame_id) const {
+nav_msgs::msg::Path PlannerCore::reconstructPath(const nav_msgs::msg::OccupancyGrid& map, const std::unordered_map<CellIndex, CellIndex, CellIndexHash>& came_from, const CellIndex& start, const CellIndex& goal, const std::string& frame_id) const {
   // Walk the parent links back from goal to start
   std::vector<CellIndex> cells;
   CellIndex current = goal;
@@ -168,7 +149,7 @@ nav_msgs::msg::Path PlannerCore::reconstructPath(
   }
   cells.push_back(start);
 
-  // Collected goal -> start, so flip it to start -> goal
+  // collected goal -> start, so flip it to start -> goal
   std::reverse(cells.begin(), cells.end());
 
   nav_msgs::msg::Path path;

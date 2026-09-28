@@ -12,7 +12,7 @@ CostmapNode::CostmapNode() : Node("costmap"), costmap_(robot::CostmapCore(this->
 
   costmap_pub_ = this->create_publisher<nav_msgs::msg::OccupancyGrid>("/costmap", 10);
 
-  costmap_.initializeCostmap();   // needed if not already called elsewhere
+  costmap_.initializeCostmap();// needed if not already called elsewhere
 }
  
 // Define the timer to publish a message every 500ms

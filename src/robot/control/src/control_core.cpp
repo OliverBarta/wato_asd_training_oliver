@@ -10,11 +10,9 @@ namespace robot
 ControlCore::ControlCore(const rclcpp::Logger& logger)
   : logger_(logger) {}
 
-geometry_msgs::msg::Twist ControlCore::computeCommand(const nav_msgs::msg::Path& path,
-                                                      const nav_msgs::msg::Odometry& odom) const {
-  geometry_msgs::msg::Twist stop;// all zeros
+geometry_msgs::msg::Twist ControlCore::computeCommand(const nav_msgs::msg::Path& path, const nav_msgs::msg::Odometry& odom) const {
+  geometry_msgs::msg::Twist stop;
 
-  // Empty path
   if (path.poses.empty()) {
     return stop;
   }
@@ -36,13 +34,11 @@ geometry_msgs::msg::Twist ControlCore::computeCommand(const nav_msgs::msg::Path&
   return computeVelocity(*target, robot_x, robot_y, robot_yaw);
 }
 
-std::optional<geometry_msgs::msg::PoseStamped> ControlCore::findLookaheadPoint(
-  const nav_msgs::msg::Path& path, double robot_x, double robot_y) const {
+std::optional<geometry_msgs::msg::PoseStamped> ControlCore::findLookaheadPoint(const nav_msgs::msg::Path& path, double robot_x, double robot_y) const {
   if (path.poses.empty()) {
     return std::nullopt;
   }
 
-  // start from the pose closest to the robot so we never pick a point behind it
   std::size_t closest = 0;
   double closest_dist = std::numeric_limits<double>::max();
   for (std::size_t i = 0; i < path.poses.size(); ++i) {
@@ -61,27 +57,22 @@ std::optional<geometry_msgs::msg::PoseStamped> ControlCore::findLookaheadPoint(
     }
   }
 
-  // Near the end of the path, aim for the goal itself
   return path.poses.back();
 }
 
-geometry_msgs::msg::Twist ControlCore::computeVelocity(const geometry_msgs::msg::PoseStamped& target,
-                                                       double robot_x, double robot_y, double robot_yaw) const {
+geometry_msgs::msg::Twist ControlCore::computeVelocity(const geometry_msgs::msg::PoseStamped& target, double robot_x, double robot_y, double robot_yaw) const {
   geometry_msgs::msg::Twist cmd;
 
   double dx = target.pose.position.x - robot_x;
   double dy = target.pose.position.y - robot_y;
   double angle_to_target = std::atan2(dy, dx);
 
-  // Heading error wrapped into [-pi, pi] so the robot turns the short way
   double error = angle_to_target - robot_yaw;
   error = std::atan2(std::sin(error), std::cos(error));
 
-  // Pure Pursuit curvature: 2 * sin(alpha) / L, angular = v * curvature
   double angular = 2.0 * linear_speed_ * std::sin(error) / lookahead_distance_;
 
   if (std::abs(error) > turn_in_place_angle_) {
-    // Target is well off to the side or behind: turn on the spot first
     cmd.linear.x = 0.0;
     angular = std::copysign(max_angular_speed_, error);
   } else {

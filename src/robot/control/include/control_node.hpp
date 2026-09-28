@@ -1,8 +1,6 @@
 #ifndef CONTROL_NODE_HPP_
 #define CONTROL_NODE_HPP_
 
-// ControlNode: the ROS wrapper around ControlCore.
-
 #include "rclcpp/rclcpp.hpp"
 #include "nav_msgs/msg/path.hpp"
 #include "nav_msgs/msg/odometry.hpp"
@@ -25,7 +23,6 @@ class ControlNode : public rclcpp::Node {
     void pathCallback(const nav_msgs::msg::Path::SharedPtr msg);
     void odomCallback(const nav_msgs::msg::Odometry::SharedPtr msg);
 
-    // Publishes control_.computeCommand() once both a path and odometry have arrived.
     void timerCallback();
 
     nav_msgs::msg::Path path_;

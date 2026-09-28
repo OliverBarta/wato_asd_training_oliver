@@ -30,8 +30,6 @@ void MapMemoryCore::integrateCostmap(const nav_msgs::msg::OccupancyGrid& costmap
   double cos_theta = std::cos(robot_theta);
   double sin_theta = std::sin(robot_theta);
 
-  // Only trust cells inside the circle the lidar can see (the costmap's
-  // half-width), not the square's corners
   double view_radius = std::min(local_width, local_height) * local_res / 2.0;
 
   int gx_min = std::max(0, static_cast<int>(std::floor((robot_x - view_radius - origin_x_) / resolution_)));
@@ -41,7 +39,6 @@ void MapMemoryCore::integrateCostmap(const nav_msgs::msg::OccupancyGrid& costmap
 
   for (int gy = gy_min; gy <= gy_max; ++gy) {
     for (int gx = gx_min; gx <= gx_max; ++gx) {
-      // Global cell centre -> offset from the robot in the global frame
       double dx = origin_x_ + (gx + 0.5) * resolution_ - robot_x;
       double dy = origin_y_ + (gy + 0.5) * resolution_ - robot_y;
 
@@ -49,7 +46,6 @@ void MapMemoryCore::integrateCostmap(const nav_msgs::msg::OccupancyGrid& costmap
         continue;
       }
 
-      // Rotate into the robot's (costmap's) frame
       double local_wx = dx * cos_theta + dy * sin_theta;
       double local_wy = -dx * sin_theta + dy * cos_theta;
 
@@ -62,11 +58,9 @@ void MapMemoryCore::integrateCostmap(const nav_msgs::msg::OccupancyGrid& costmap
 
       int8_t value = costmap.data[ly * local_width + lx];
       if (value < 0) {
-        continue;  // unknown, keep whatever the global map already has
+        continue;
       }
 
-      // New scan overwrites old data, including free cells, so ghost obstacles
-      // left by earlier bad merges get erased when the robot looks again
       global_map_[gy][gx] = value;
     }
   }

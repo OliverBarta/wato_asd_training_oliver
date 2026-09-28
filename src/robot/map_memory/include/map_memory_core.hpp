@@ -13,8 +13,7 @@ class MapMemoryCore {
     explicit MapMemoryCore(const rclcpp::Logger& logger);
 
     void initializeGlobalMap(double resolution, int width, int height);
-    void integrateCostmap(const nav_msgs::msg::OccupancyGrid& costmap,
-                           double robot_x, double robot_y, double robot_theta);
+    void integrateCostmap(const nav_msgs::msg::OccupancyGrid& costmap, double robot_x, double robot_y, double robot_theta);
     nav_msgs::msg::OccupancyGrid getGlobalMapMessage(const std::string& frame_id, rclcpp::Time stamp) const;
 
   private:

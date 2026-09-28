@@ -21,7 +21,6 @@ void PlannerNode::mapCallback(const nav_msgs::msg::OccupancyGrid::SharedPtr msg)
   current_map_ = *msg;
   map_received_ = true;
 
-  // The new map might have revealed an obstacle on the old path
   if (state_ == State::WAITING_FOR_ROBOT_TO_REACH_GOAL) {
     planPath();
   }
@@ -61,7 +60,6 @@ void PlannerNode::timerCallback() {
     state_ = State::WAITING_FOR_GOAL;
     goal_received_ = false;
 
-    // Publish an empty path so the controller stops following the old one
     nav_msgs::msg::Path empty_path;
     empty_path.header.stamp = this->now();
     empty_path.header.frame_id = current_map_.header.frame_id;

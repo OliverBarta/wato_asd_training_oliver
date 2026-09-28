@@ -16,17 +16,13 @@ namespace robot
 
 class ControlCore {
   public:
-    // Constructor, we pass in the node's RCLCPP logger to enable logging to terminal
     ControlCore(const rclcpp::Logger& logger);
 
-    // Computes the velocity command to follow the path from the robot's current pose.
-    geometry_msgs::msg::Twist computeCommand(const nav_msgs::msg::Path& path,
-                                             const nav_msgs::msg::Odometry& odom) const;
+    geometry_msgs::msg::Twist computeCommand(const nav_msgs::msg::Path& path, const nav_msgs::msg::Odometry& odom) const;
 
   private:
     std::optional<geometry_msgs::msg::PoseStamped> findLookaheadPoint(const nav_msgs::msg::Path& path, double robot_x, double robot_y) const;
 
-    // Pure Pursuit steering towards the target from the robot's pose.
     geometry_msgs::msg::Twist computeVelocity(const geometry_msgs::msg::PoseStamped& target, double robot_x, double robot_y, double robot_yaw) const;
 
     static double computeDistance(double x1, double y1, double x2, double y2);
