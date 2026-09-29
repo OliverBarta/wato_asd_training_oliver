@@ -49,7 +49,7 @@ void CostmapNode::publishCostmap() {
 
   // header
   msg.header.stamp = this->now();
-  msg.header.frame_id = "sim_world";   // match your fixed frame — check what your other topics use
+  msg.header.frame_id = "sim_world";
 
   // info
   msg.info.resolution = costmap_.getResolution();
@@ -58,9 +58,9 @@ void CostmapNode::publishCostmap() {
   msg.info.origin.position.x = costmap_.getOriginX();
   msg.info.origin.position.y = costmap_.getOriginY();
   msg.info.origin.position.z = 0.0;
-  msg.info.origin.orientation.w = 1.0;   // identity rotation
+  msg.info.origin.orientation.w = 1.0;
 
-  // data: flatten 2D grid into 1D row-major array
+  // flatten the 2D grid into 1D array
   const auto& grid = costmap_.getGrid();
   msg.data.resize(costmap_.getWidth() * costmap_.getHeight());
 
